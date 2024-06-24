@@ -25,6 +25,16 @@
 	transition: transform 0.5s ease;
 }
 
+// ховер и active добавлены согласно макету
+.container:hover {
+	background-color: #FFC802;
+}
+
+.container:active {
+	background-color: #787878;
+}
+
 .arrow_open {
 	transform: rotate(0deg);
 }
+

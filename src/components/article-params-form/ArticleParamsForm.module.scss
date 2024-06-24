@@ -23,10 +23,20 @@
 	padding: 50px 31px;
 	background-color: #ffffff;
 	border-right: 1px solid #000000;
+	// gap добавлен, чтобы форма соответствовала макету
+	gap: 50px;
 }
 
 .bottomContainer {
 	display: flex;
 	justify-content: space-between;
 	margin-top: auto;
+}
+
+// добавлен класс для тайтла формы, чтобы форма была стилизована по макету
+.title {
+	font-family: 'Open Sans';
+	font-size: 31px;
+	font-weight: 900;
+	text-transform: uppercase;
 }

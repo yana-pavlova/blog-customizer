@@ -10,10 +10,23 @@
 	cursor: pointer;
 }
 
-.button:active {
+// изменены стили кнопок согласно макету
+.button[type=submit] {
 	background: var(--gold, #ffc802);
 }
 
-.button:hover {
-	background: var(--gold, #ffc802);
+.button[type=submit]:hover {
+	background: var(--gold, #FFEDAB);
+}
+
+.button[type=reset] {
+	background: var(--white, #ffffff);
+}
+
+.button[type=reset]:hover {
+	background: var(--black, #000000);
+
+	.text {
+		color: #ffffff; // Цвет текста при ховере на кнопку
+	}
 }

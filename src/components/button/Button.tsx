@@ -8,12 +8,13 @@ export const Button = ({
 	type,
 }: {
 	title: string;
-	onClick?: () => void;
+	// добавлен аргумент, чтобы можно было сбрасывать дефолтное поведение при клике
+	onClick?: (e: React.FormEvent) => void;
 	type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
 }) => {
 	return (
 		<button className={styles.button} type={type} onClick={onClick}>
-			<Text weight={800} uppercase>
+			<Text extraClassName={styles.text} weight={800} uppercase>
 				{title}
 			</Text>
 		</button>

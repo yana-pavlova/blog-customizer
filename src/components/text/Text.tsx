@@ -1,6 +1,6 @@
-import { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode } from 'react';
 import { clsx } from 'clsx';
-import { FontFamiliesClasses } from 'src/constants/articleProps';
+import type { FontFamiliesClasses } from 'src/constants/articleProps';
 
 import styles from './index.module.scss';
 
@@ -25,6 +25,8 @@ type TextProps = {
 	family?: FontFamiliesClasses;
 	/** Булевая пропса, делает динамическим только семью шрифтов и цвет */
 	dynamicLite?: boolean;
+	/** Добавлен дополнительный класс для текста, чтобы сделать ховер на кнопке "сбросить" */
+	extraClassName?: string;
 };
 
 export const Text = ({
@@ -38,6 +40,7 @@ export const Text = ({
 	align = 'left',
 	family = 'open-sans',
 	dynamicLite = false,
+	extraClassName = '', // доп. класс для реализация ховера на кнопке
 }: TextProps) => {
 	const className = clsx(
 		styles.text,
@@ -48,7 +51,8 @@ export const Text = ({
 		{ [styles.uppercase]: uppercase },
 		styles[`${align}`],
 		styles[`${family}`],
-		{ [styles.dynamicLite]: dynamicLite }
+		{ [styles.dynamicLite]: dynamicLite },
+		extraClassName // доп. класс
 	);
 	return <Tag className={className}>{children}</Tag>;
 };
