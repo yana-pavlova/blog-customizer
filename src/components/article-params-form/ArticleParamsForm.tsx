@@ -2,6 +2,7 @@ import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
 import styles from './ArticleParamsForm.module.scss';
 import { Select } from '../select';
+import { Text } from '../text';
 import {
 	type ArticleStateType,
 	type OptionType,
@@ -12,50 +13,64 @@ import {
 	backgroundColors,
 	contentWidthArr,
 } from '../../constants/articleProps';
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { RadioGroup } from '../radio-group';
 import { Separator } from 'components/separator';
 import clsx from 'clsx';
+import { useClose } from '../../hooks/useClose';
 
 type ArticleParamsFormProps = {
-	refForm: React.RefObject<HTMLFormElement>;
-	refButton: React.RefObject<HTMLDivElement>;
-	refArticle: React.RefObject<HTMLDivElement>;
 	applySettings: (settings: ArticleStateType) => void;
 };
 
 export const ArticleParamsForm = ({
-	refForm,
-	refButton,
-	refArticle,
 	applySettings,
 }: ArticleParamsFormProps) => {
 	// состояние управляет тем, открыта форма на странице или нет
-	const [formIsOpened, setformIsOpened] = useState(false);
+	const [formIsOpened, setFormIsOpened] = useState(false);
+
+	// рефы для формы и кнопки
+    const refForm = useRef<HTMLFormElement | null>(null);
+    const refButton = useRef<HTMLDivElement | null>(null);
+
 	// скрыть/показать форму
 	const toggleForm = () => {
-		setformIsOpened((prevformIsOpened) => !prevformIsOpened);
+		setFormIsOpened((prevformIsOpened) => !prevformIsOpened);
 	};
 
-	useEffect(() => {
-		const handleClickOutside = (e: MouseEvent) => {
-			// условие истинно, только если клик произошёл не на форме и не на диве с кнопкой закрытия/открытия формы
-			if (
-				formIsOpened &&
-				!refForm.current!.contains(e.target as Node) &&
-				!refButton.current!.contains(e.target as Node)
-			) {
-				toggleForm();
-			}
-		};
+	// кастомный хук для обработки клика по оверлею и нажатии Escape
+	useClose({
+		isOpen: formIsOpened,
+		onClose: toggleForm,
+		rootRef: refForm,
+	  });
 
-		refArticle.current!.addEventListener('click', handleClickOutside);
+	// 	const handleClickOutside = (e: MouseEvent) => {
+	// 		if (!formIsOpened) return;
+	// 		// условие истинно, только если клик произошёл не на форме и не на диве с кнопкой закрытия/открытия формы
+	// 		if (
+	// 			refForm.current &&
+	// 			!refForm.current.contains(e.target as Node) &&
+	// 			refButton.current &&
+	// 			!refButton.current.contains(e.target as Node)
+	// 		) {
+	// 			console.log(refForm);
 
-		// удаление обработчика при размонтировании компонента
-		return () => {
-			refArticle.current!.removeEventListener('click', handleClickOutside);
-		};
-	}, [formIsOpened]);
+	// 			toggleForm();
+	// 		}
+	// 	};
+
+	// 	// refArticle.current!.addEventListener('click', handleClickOutside);
+
+	// 	document.addEventListener('click', handleClickOutside);
+
+	// 	// удаление обработчика при размонтировании компонента
+	// 	return () => {
+	// 		document.removeEventListener('click', handleClickOutside);
+	// 		// refArticle.current!.removeEventListener('click', handleClickOutside);
+	// 	};
+	// }, [formIsOpened]);
+
 
 	// состояние формы (стили)
 	const [formSettings, setFormSettings] =
@@ -119,7 +134,7 @@ export const ArticleParamsForm = ({
 		: 'Выберите ширину контента';
 
 	// обработчик сабмита формы
-	const handleApplyClick = (e: React.FormEvent) => {
+	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		applySettings(formSettings);
 		toggleForm();
@@ -133,11 +148,11 @@ export const ArticleParamsForm = ({
 				ref={refButton}
 			/>
 			<aside
-				className={clsx(
-					`${styles.container} ${formIsOpened ? styles.container_open : ''}`
-				)}>
-				<form className={clsx(styles.form)} ref={refForm}>
-					<h2 className={clsx(styles.title)}>Задайте параметры</h2>
+				className={clsx(styles.container, {
+					[styles.container_open]: formIsOpened,
+				  })}>
+				<form className={styles.form} ref={refForm} onSubmit={handleSubmit}>
+					<Text children='Задайте параметры' as='h2' size={31} weight={800} uppercase={true}/>
 					<Select
 						selected={fontFamilyOption}
 						options={fontFamilyOptions}
@@ -175,12 +190,11 @@ export const ArticleParamsForm = ({
 						onChange={handleContentWidthChange}
 					/>
 
-					<div className={clsx(styles.bottomContainer)}>
+					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' type='reset' onClick={resetFormSettings} />
 						<Button
 							title='Применить'
 							type='submit'
-							onClick={handleApplyClick}
 						/>
 					</div>
 				</form>
